@@ -147,6 +147,30 @@ body {
 
 /*reference: https://www.w3schools.com/css/tryit.asp?filename=trycss_dropdown_button*/
 
+#reset-button{
+    background-color: rgb(255, 200, 34);
+    border-color: rgb(159, 130, 33);
+    border-radius: 6px;
+    border-width: 2px;
+}
+
+#hints-btn{
+    background-color: rgb(255, 200, 34);
+    border-color: rgb(159, 130, 33);
+    border-radius: 6px;
+    border-width: 2px;
+    margin-left: 20em;
+}
+
+select{
+    background-color: rgb(255, 200, 34);
+    border-color: rgb(159, 130, 33);
+    border-radius: 6px;
+    border-width: 2px;
+}
+/* option:hover{
+    background-color: red;
+} */
 .dropbtn {
   background-color: #4CAF50;
   color: white;

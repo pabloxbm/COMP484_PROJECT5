@@ -1,6 +1,7 @@
 let map;
 let currQuestion = 0;
 let score = 0;
+let hintsCount = 0;
 
 let answerRects = [];
 let answerHints = [];
@@ -123,7 +124,7 @@ const resetBtn = document.querySelector("#reset-button")
 
 function showHints(e){
     e.preventDefault()
-
+    hintsCount++;
     const svgMarker = {
         path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
         fillColor: "orange",
@@ -211,7 +212,7 @@ function checkAnswer(e) {
     if(currQuestion == locations.length){
         // final question
         let wrong = currQuestion-score;
-        resultBox.innerHTML = score + " Correct, "+ wrong+" Incorrect";
+        resultBox.innerHTML = score + " Correct, "+ wrong+" Incorrect. Hints Used: "+hintsCount;
         
         
         
@@ -254,6 +255,8 @@ function resetGame(e){
     }
     currQuestion = 0;
     score = 0;
+    resultBox.innerHTML = "";
+    hintsCount = 0;
     updateQuestion();
     
     
