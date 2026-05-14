@@ -1,5 +1,7 @@
+let map;
+
 function initMap() {
-    const map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: 34.2390, lng: -118.5291 }, // CSUN
         zoom: 17,
         disableDoubleClickZoom: true,
@@ -33,3 +35,11 @@ function initMap() {
 // }
 
 // void init();
+
+function checkType(e){
+    mapTypeBtn.checked? map.setMapTypeId('satellite'):map.setMapTypeId('roadmap');
+    // alert("test");
+}
+
+const mapTypeBtn = document.querySelector("#maptype");
+mapTypeBtn.addEventListener("click", this.checkType);

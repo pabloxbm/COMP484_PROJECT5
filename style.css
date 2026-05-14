@@ -125,12 +125,25 @@ body {
 }
 
 .main{
-    /* align-items: center;
+    align-items: center;
     align-content: center;
-    text-align: center; */
+    /* text-align: center; */
 }
 
+.questions{
+    background-color: blue;
+    display: inline-block;
+    width: 49%;
+    padding-left: .5%;
+    padding-right: .5%;
+}
 
+.map-stuff{
+    background-color: green;
+    display: inline-block;
+    width: 49%;
+    padding-left: .5%;
+}
 .intro p,
 .test-area {
     margin: 0 auto;
