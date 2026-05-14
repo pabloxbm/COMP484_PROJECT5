@@ -98,8 +98,10 @@ const mapTypeBtn = document.querySelector("#maptype");
 const currQuestionBox = document.querySelector("#questions");
 const resultBox = document.querySelector("#results");
 const scoreBox = document.querySelector("#final-score");
-
 const hintsBtn = document.querySelector("#hints-btn");
+const map3d = document.querySelector("#map-3d");
+const resetBtn = document.querySelector("#reset-button")
+
 
 // async function init() {
 //     const { Map3DElement } = await google.maps.importLibrary('maps3d');
@@ -124,9 +126,10 @@ function showHints(e){
 
     const svgMarker = {
         path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-        fillColor: "blue",
-        fillOpacity: 0.6,
-        strokeWeight: 0,
+        fillColor: "orange",
+        fillOpacity: 0.9,
+        strokeColor: "black",
+        strokeWeight: 1,
         rotation: 0,
         scale: 4,
         anchor: new google.maps.Point(0, 20),
@@ -158,17 +161,9 @@ function showHints(e){
 }
 
 function checkType(e){
-    if(mapTypeBtn.checked){
-        map.setMapTypeId('satellite');
-        map.setTilt(55);
-        map.setZoom(17.52);
-        locations[0].bounds.north = 34.24073;
-        locations[1].bounds.north = 34.24034;
-        locations[2].bounds.north = 34.24053;
-        locations[3].bounds.north = 34.23793;
-        locations[4].bounds.north = 34.23852;
 
-    }else{
+    if (mapTypeBtn.value == "roadmap") {
+        document.getElementById("map").style.display = "block";
         map.setMapTypeId('roadmap');
         map.setTilt(0);
         map.setZoom(17.45);
@@ -177,6 +172,21 @@ function checkType(e){
         locations[2].bounds.north = 34.24043;
         locations[3].bounds.north = 34.23783;
         locations[4].bounds.north = 34.23842;
+        map3d.style.display = "none";
+    } else if(mapTypeBtn.value == "satellite"){
+        document.getElementById("map").style.display = "block";
+        map.setMapTypeId('satellite');
+        map.setTilt(55);
+        map.setZoom(17.52);
+        locations[0].bounds.north = 34.24073;
+        locations[1].bounds.north = 34.24034;
+        locations[2].bounds.north = 34.24053;
+        locations[3].bounds.north = 34.23793;
+        locations[4].bounds.north = 34.23852;
+        map3d.style.display = "none";
+    }else{
+        document.getElementById("map").style.display = "none";
+        map3d.style.display = "block";
     }
     // mapTypeBtn.checked? map.setMapTypeId('satellite'):map.setMapTypeId('roadmap');
     // alert("test");
@@ -224,7 +234,7 @@ function updateAnswer(correct){
 }
 
 function drawRectangle(bounds, correct) {
-    new google.maps.Rectangle({
+    const currRect = new google.maps.Rectangle({
         strokeColor: correct ? "#1d951d" : "#FF0000",
         strokeOpacity: 0.8,
         strokeWeight: 2,
@@ -233,10 +243,31 @@ function drawRectangle(bounds, correct) {
         fillColor: correct ? "#1d951d" : "#FF0000",
         fillOpacity: 0.4,
     });
+    answerRects.push(currRect);
 }
 
-mapTypeBtn.addEventListener("click", this.checkType);
+//referenece: https://developer.mozilla.org/en-US/docs/Web/API/Element/children
+function resetGame(e){
+    e.preventDefault();
+    for (const child of currQuestionBox.children) {
+        child.innerHTML = "";
+    }
+    currQuestion = 0;
+    score = 0;
+    updateQuestion();
+    
+    
+    answerHints.forEach(e => e.setMap(null));
+    answerHints = [];
+    answerRects.forEach(e => e.setMap(null));
+    answerRects = [];
+    if(mapTypeBtn.hasAttribute("disabled")){
+        mapTypeBtn.toggleAttribute("disabled");
+    }
+}
+mapTypeBtn.addEventListener("change", this.checkType);
 hintsBtn.addEventListener("click", this.showHints);
+resetBtn.addEventListener("click", this.resetGame);
 
 function updateQuestion(){
     let newQuestion = document.createElement("p");

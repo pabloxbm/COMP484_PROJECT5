@@ -22,26 +22,36 @@
                     <div id="results">
                     </div>
                     <p id="final-score"></p>
+                    <button id="reset-button">Reset</button>
                 </section>
 
             </section>
             <section class="map-stuff">
                 <section class="button-section">
-                    
-                    <label id="btn-container"disabled> 
+                    <select id="maptype">
+                        <option value="roadmap">Roadmap</option>
+                        <option value="satellite">Satellite</option>
+                        <option value="hybrid" disabled>3D</option>
+                    </select>
+                    <!-- <label id="btn-container"disabled> 
                         <br>Select Satellite Map:
                         <input type="checkbox" id="maptype"></input>
                         <span class="dmstyle"></span>
-                    </label>
+                    </label> -->
                     <button id="hints-btn">Show Hints</button>
-                </section>
+                </section><!-- Button Selection-->
                 <div id="map"></div>
+                <gmp-map-3d id="map-3d" mode="hybrid" 
+                    center="34.2390, -118.5291" 
+                    range="800" tilt="45" heading="0">
+                </gmp-map-3d>
             </section>
         </main>
         <!-- https://www.youtube.com/watch?v=uPhWSyRqQDA helped -->
 
         <script src="script.js"></script>
-        <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1nFtknIuYLLk4rR9Zd6jpg1dGiJtGl54&loading=async&callback=initMap"></script>
+        <!-- <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1nFtknIuYLLk4rR9Zd6jpg1dGiJtGl54&loading=async&callback=initMap"></script> -->
+        <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1nFtknIuYLLk4rR9Zd6jpg1dGiJtGl54&loading=async&v=beta&libraries=maps3d&callback=initMap"></script>
         <!-- <script defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1nFtknIuYLLk4rR9Zd6jpg1dGiJtGl54&callback=initMap">
         </script>
