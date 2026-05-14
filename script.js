@@ -2,6 +2,9 @@ let map;
 let currQuestion = 0;
 let score = 0;
 
+let answerRects = [];
+let answerHints = [];
+
 const locations = [
     {
         name: "Student Recreation Center",
@@ -21,10 +24,74 @@ const locations = [
     },
     {
         name: "Live Oak Hall",
-        bounds: { north: 34.23838, south: 34.23816, east: -118.52763, west: -118.52881 }
+        bounds: { north: 34.23842, south: 34.23816, east: -118.52763, west: -118.52881 }
     }
 ];
 
+
+        // library
+        // new google.maps.Marker({
+        //     position: {lat: 34.23959, lng: -118.52934 },
+        //     icon: svgMarker,
+        //     map: map,
+        // });
+        //src
+        // new google.maps.Marker({
+        //     position: {lat: 34.23952, lng: -118.52496 },
+        //     icon: svgMarker,
+        //     map: map,
+        // });
+        // uni hall
+        // new google.maps.Marker({
+        //     position: {lat: 34.23930, lng: -118.53220 },
+        //     icon: svgMarker,
+        //     map: map,
+        // });
+        // like oak
+        // new google.maps.Marker({
+        //     position: {lat: 34.23781, lng: -118.52825 },
+        //     icon: svgMarker,
+        //     map: map,
+        // });
+        // Maple
+        // new google.maps.Marker({
+        //     position: {lat: 34.23712, lng: -118.53122 },
+        //     icon: svgMarker,
+        //     map: map,
+        // });
+
+        const hints = [
+    {
+        name: "Student Recreation Center",
+        h1: { position: {lat: 34.23952, lng: -118.52496 }},
+        h2: { position: {lat: 34.23998, lng: -118.53089}},
+        h3: { position: {lat: 34.23712, lng: -118.53122 }}
+    },
+    {
+        name: "Valeria (University) Hall",
+        h1: { position: {lat: 34.23930, lng: -118.53220 }},
+        h2: { position: {lat: 34.23784, lng: -118.53076}},
+        h3: { position: {lat: 34.23712, lng: -118.53122 }}
+    },
+    {
+        name: "University Libary",
+        h1: { position: {lat: 34.23959, lng: -118.52934 }},
+        h2: { position: {lat: 34.23998, lng: -118.53089}},
+        h3: { position: {lat: 34.23956, lng: -118.52705}}
+    },
+    {
+        name: "Maple Hall",
+        h1: { position: {lat: 34.23712, lng: -118.53122 }},
+        h2: { position: {lat: 34.23784, lng: -118.53076}},
+        h3: { position: {lat: 34.23956, lng: -118.52705}}
+    },
+    {
+        name: "Live Oak Hall",
+        h1: { position: {lat: 34.23781, lng: -118.52825 }},
+        h2: { position: {lat: 34.23784, lng: -118.53076}},
+        h3: { position: {lat: 34.23998, lng: -118.53089}}
+    }
+]
 
 
 const mapTypeBtn = document.querySelector("#maptype");
@@ -32,6 +99,7 @@ const currQuestionBox = document.querySelector("#questions");
 const resultBox = document.querySelector("#results");
 const scoreBox = document.querySelector("#final-score");
 
+const hintsBtn = document.querySelector("#hints-btn");
 
 // async function init() {
 //     const { Map3DElement } = await google.maps.importLibrary('maps3d');
@@ -51,14 +119,73 @@ const scoreBox = document.querySelector("#final-score");
 
 // void init();
 
+function showHints(e){
+    e.preventDefault()
+
+    const svgMarker = {
+        path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+        fillColor: "blue",
+        fillOpacity: 0.6,
+        strokeWeight: 0,
+        rotation: 0,
+        scale: 4,
+        anchor: new google.maps.Point(0, 20),
+    };
+
+    const hint1 = new google.maps.Marker({
+        position: hints[currQuestion].h1.position,
+        icon: svgMarker,
+        map: map,
+    });
+
+    answerHints.push(hint1);
+
+    const hint2 = new google.maps.Marker({
+        position: hints[currQuestion].h2.position,
+        icon: svgMarker,
+        map: map,
+    });
+
+    answerHints.push(hint2);
+    const hint3 = new google.maps.Marker({
+        position: hints[currQuestion].h3.position,
+        icon: svgMarker,
+        map: map,
+    });
+
+    answerHints.push(hint3);
+
+}
+
 function checkType(e){
-    mapTypeBtn.checked? map.setMapTypeId('satellite'):map.setMapTypeId('roadmap');
+    if(mapTypeBtn.checked){
+        map.setMapTypeId('satellite');
+        map.setTilt(55);
+        map.setZoom(17.52);
+        locations[0].bounds.north = 34.24073;
+        locations[1].bounds.north = 34.24034;
+        locations[2].bounds.north = 34.24053;
+        locations[3].bounds.north = 34.23793;
+        locations[4].bounds.north = 34.23852;
+
+    }else{
+        map.setMapTypeId('roadmap');
+        map.setTilt(0);
+        map.setZoom(17.45);
+        locations[0].bounds.north = 34.24063;
+        locations[1].bounds.north = 34.24024;
+        locations[2].bounds.north = 34.24043;
+        locations[3].bounds.north = 34.23783;
+        locations[4].bounds.north = 34.23842;
+    }
+    // mapTypeBtn.checked? map.setMapTypeId('satellite'):map.setMapTypeId('roadmap');
     // alert("test");
 }
 
 
 
 function checkAnswer(e) {
+    mapTypeBtn.disabled = true;
     let locationBounds = locations[currQuestion].bounds;
 
     if(e.latLng.lat() < locationBounds.north && e.latLng.lat() > locationBounds.south && e.latLng.lng() < locationBounds.east  && e.latLng.lng() > locationBounds.west){
@@ -75,6 +202,9 @@ function checkAnswer(e) {
         // final question
         let wrong = currQuestion-score;
         resultBox.innerHTML = score + " Correct, "+ wrong+" Incorrect";
+        
+        
+        
     }else{
         updateQuestion();
     }
@@ -83,6 +213,8 @@ function checkAnswer(e) {
 
 
 function updateAnswer(correct){
+    answerHints.forEach(e => e.setMap(null));
+    answerHints = [];
     
     let newAnswer = document.createElement("p");
     newAnswer.classList.add("answer-attempt");
@@ -104,6 +236,7 @@ function drawRectangle(bounds, correct) {
 }
 
 mapTypeBtn.addEventListener("click", this.checkType);
+hintsBtn.addEventListener("click", this.showHints);
 
 function updateQuestion(){
     let newQuestion = document.createElement("p");
