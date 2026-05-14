@@ -113,7 +113,7 @@ body {
 .masthead {
     padding: 1em 2em;
     /* background-color: #f6e6b7; */
-    background-color: red;
+    /* background-color: red; */
     display: inline-block;
     color: #0D1B2E;
 }
@@ -127,22 +127,58 @@ body {
 .main{
     align-items: center;
     align-content: center;
+    /* display: inline-block; */
+    display: flex;
     /* text-align: center; */
 }
-
-.questions{
-    background-color: blue;
-    display: inline-block;
-    width: 49%;
-    padding-left: .5%;
-    padding-right: .5%;
+.info{
+    /* background-color: yellow; */
+    width: 1100px;
+    max-width: 1100px;
+    height: 1000px;
 }
-
-.map-stuff{
-    background-color: green;
+#questions{
+    /* background-color: blue; */
     display: inline-block;
-    width: 49%;
-    padding-left: .5%;
+    max-width: 850px;
+    margin-left: 50px;
+    margin-right: .5%;
+    margin-top: 0px;
+    text-align: center;
+}
+.current-question{
+    background-color: rgb(100, 161, 198);
+    font-weight: bold;
+    width: 800px;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.answer-attempt{
+    font-weight: bold;
+    font-size: 1.3rem;
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+#results-box{
+    /* background-color:red; */
+    display: inline-block;
+    margin-left: 80px;
+    max-width: 850px;
+    text-align: center;
+}
+#results{
+    font-size: 5rem;
+    font-weight: bold;
+}
+.map-stuff{
+    /* background-color: green; */
+    display: inline-block;
+    max-width: 1000px;
+    margin-left: .5%;
+    margin-right: 0px;
+    text-align: center;
+    align-items: center;
 }
 .intro p,
 .test-area {
@@ -167,8 +203,8 @@ body {
 }
 
 #map{
-    height: 750px;
-    width: 850px;
+    height: 950px;
+    width: 1150px;
     display: inline-block;
     /* background-color: red; */
 }

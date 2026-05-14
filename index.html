@@ -14,14 +14,22 @@
             <h1>Map Quiz. Please double click on the map the location of:</h1>
         </header>
         <main class="main">
-            <section class="questions">
-                This is where questions be
+            <section class="info">
+                <section id="questions">
+                </section>
+                <br>
+                <section id = "results-box">
+                    <div id="results">
+                    </div>
+                    <p id="final-score"></p>
+                </section>
+
             </section>
             <section class="map-stuff">
                 <section class="button-section">
                     
                     <label id="btn-container"disabled> 
-                        <br>
+                        <br>Select Satellite Map:
                         <input type="checkbox" id="maptype"></input>
                         <span class="dmstyle"></span>
                     </label>
@@ -30,10 +38,13 @@
             </section>
         </main>
         <!-- https://www.youtube.com/watch?v=uPhWSyRqQDA helped -->
-        <script defer
+
+        <script src="script.js"></script>
+        <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1nFtknIuYLLk4rR9Zd6jpg1dGiJtGl54&loading=async&callback=initMap"></script>
+        <!-- <script defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1nFtknIuYLLk4rR9Zd6jpg1dGiJtGl54&callback=initMap">
         </script>
-        <script src="script.js" ></script>
+        <script src="script.js" ></script> -->
     </body>
 
 </html>
