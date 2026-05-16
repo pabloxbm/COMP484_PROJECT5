@@ -282,3 +282,56 @@ select{
     display: inline-block;
     /* background-color: red; */
 }
+
+
+.leaderboard-area{
+    /* display: inline-block; */
+    margin:50px;
+    max-width: 350px;
+    /* background-color: green; */
+    border: 5px solid #e9ac20;
+    border-radius: 10px;
+    padding: 1.5rem;
+    /* height: 200px; */
+}
+
+.leaderboard-header{
+    font-size: 2rem;
+    border-bottom: 2px solid black;
+}
+
+.leaderboard-scores{
+    display: inline-block;
+    width: 300px;
+    margin: 10px;
+    margin-top: 0px;
+    /* background-color: red; */
+}
+
+.leaderboard-scores p{
+    background-color: #f6d662;
+    padding: 2px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    margin-bottom: 8px;
+}
+
+.leaderboard-scores div{
+    display: block;
+    text-align: left;
+    margin-top: 0px;
+    margin-left: 15px;
+    margin-right: 15px;
+    /* background-color: blue; */
+    height: 100px;
+    max-width: 350px;
+}
+
+
+.timer {
+    font-size: 3em;
+    font-weight: bold;
+}
+#clock{
+    margin-left: 50px;
+}

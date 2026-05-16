@@ -1,3 +1,260 @@
+// using timer and leaderboard from previous proejct
+// localStorage.clear();
+// Two Intervals, one for the timer and related operations and a different one for the wpm section as if it were at the same pace as the timer it would look crazy
+let intervalTimer = null;
+let wpmIntervalTimer = null;
+// let intervalTimerTest = null;
+
+// variables holding various values
+let currentWPM = 0;
+var timerHS = 0;
+var timerS = 0;
+var timerM = 0;
+
+// booleans and variables to check for certain events
+let hasCompleted = false;
+let isStopped = true;
+
+
+// Getting the info for leaderboards
+let userCount = (JSON.parse(localStorage.getItem("userTotal"))+1) || 0;
+let scoresTimeMap= JSON.parse(localStorage.getItem("scoresTimeMap")|| '[]') ;
+
+const theTimer = document.querySelector(".timer");
+const leaderboardScores = document.querySelector(".leaderboard-scores");
+const leaderboardScoresTime = document.querySelector("#leaderboard-scores-time div");
+
+// Add leading zero to numbers 9 or below (purely for aesthetics):
+function timerToString(){
+    // check if less than 10 then add a leading 0
+    let stringTimerHS = timerHS;
+    if(stringTimerHS<10){
+        stringTimerHS = "0"+stringTimerHS;
+    }
+    let stringTimerS = timerS;
+    if(stringTimerS<10){
+        stringTimerS = "0"+stringTimerS;
+    }
+    let stringTimerM = timerM;
+    if(stringTimerM<10){
+        stringTimerM = "0"+stringTimerM;
+    }
+    
+    // return full string
+    return stringTimerM+"."+stringTimerS+"."+stringTimerHS;
+}
+
+// Run a standard minute/second/hundredths timer:
+function runningTimer(){
+    // every 100 hundreths of a second add 1 to second and reset hundreths
+    timerHS+=1;
+    if(timerHS>= 100){
+        timerHS = 0;
+        timerS+=1;
+    }
+    // evrey 60 seconds and 1 to minute and reset seconds
+    if(timerS>= 60){
+        timerS = 0;
+        timerM+=1;
+    }
+    // console.log("running");
+    // alert("yo its running");
+    
+    // update the timer using the string method 
+    theTimer.innerHTML = timerToString();
+}
+
+
+// function to update the leaderboard both on page load and when a new high score is reached
+function updateLeaderboard(){
+    // check if completed a sentence
+    if(hasCompleted){
+        if(score >= 1){
+        // if the scores array for time has values
+            if(scoresTimeMap.length !=0){
+                // if it has 3 then update accordingly by checking each position, starting at the front to check if current time is shorter than leaderboard ones
+                // use unshift to add it to the front or splice to add it to that specific index, play sound, and pop to remove the last one, check hasplayed variable to ensure the sound doesn't play twice (for wpm and once for time)
+                if(scoresTimeMap.length == 3){
+                    if(((60*timerM)+timerS+(timerHS/100)) < scoresTimeMap[0].time){
+                        scoresTimeMap.unshift({username: "User"+userCount,
+                            timeString: timerToString(), 
+                            chars: {correct: score, hintsU: hintsCount}, 
+                            time: ((60*timerM)+timerS+(timerHS/100))
+                        });
+                        // if(!hasPlayed){
+                        //     celebSound.play();
+                        // }
+                        scoresTimeMap.pop()
+                    }else if (((60*timerM)+timerS+(timerHS/100)) < scoresTimeMap[1].time){
+                        scoresTimeMap.splice(1, 0, {username: "User"+userCount,
+                            timeString: timerToString(), 
+                            chars: {correct: score, hintsU: hintsCount}, 
+                            time: ((60*timerM)+timerS+(timerHS/100))
+                        });
+                        // if(!hasPlayed){
+                        //     celebSound.play();
+                        // }
+                        scoresTimeMap.pop()
+                    }else if (((60*timerM)+timerS+(timerHS/100)) < scoresTimeMap[2].time){
+                        scoresTimeMap.splice(2, 0, {username: "User"+userCount,
+                            timeString: timerToString(), 
+                            chars: {correct: score, hintsU: hintsCount}, 
+                            time: ((60*timerM)+timerS+(timerHS/100))
+                        });
+                        // if(!hasPlayed){
+                        //     celebSound.play();
+                        // }
+                        scoresTimeMap.pop()
+                    }
+                // if it has 2 then update accordingly by checking the first 2 positions, starting at the front to check if current time is shorter than leaderboard ones
+                // use unshift to add it to the front or splice to add it to that specific index, play sound, and check hasplayed variable to ensure the sound doesn't play twice
+                // if it is not greater than any then just push it to the back
+                }else if(scoresTimeMap.length == 2){
+                    if(((60*timerM)+timerS+(timerHS/100)) < scoresTimeMap[0].time){
+                        scoresTimeMap.unshift({username: "User"+userCount,
+                            timeString: timerToString(), 
+                            chars: {correct: score, hintsU: hintsCount}, 
+                            time: ((60*timerM)+timerS+(timerHS/100))
+                        });
+                        // if(!hasPlayed){
+                        //     celebSound.play();
+                        // }
+                    }else if (((60*timerM)+timerS+(timerHS/100)) < scoresTimeMap[1].time){
+                        scoresTimeMap.splice(1, 0, {username: "User"+userCount,
+                            timeString: timerToString(), 
+                            chars: {correct: score, hintsU: hintsCount}, 
+                            time: ((60*timerM)+timerS+(timerHS/100))
+                        });
+                        // if(!hasPlayed){
+                        //     celebSound.play();
+                        // }
+                    }else{
+                        scoresTimeMap.push({username: "User"+userCount,
+                            timeString: timerToString(), 
+                            chars: {correct: score, hintsU: hintsCount}, 
+                            time: ((60*timerM)+timerS+(timerHS/100))
+                        });
+                        // if(!hasPlayed){
+                        //     celebSound.play();
+                        // }
+                    }
+                // if it has 1 then update accordingly by checking the first to check if current time is shorter than leaderboard one
+                // use unshift to add it to the front, play sound, and check hasplayed variable to ensure the sound doesn't play twice
+                // if it is not shoter than that one then just push it to the back
+                }else{
+                    if(((60*timerM)+timerS+(timerHS/100)) < scoresTimeMap[0].time){
+                        scoresTimeMap.unshift({username: "User"+userCount,
+                            timeString: timerToString(), 
+                            chars: {correct: score, hintsU: hintsCount}, 
+                            time: ((60*timerM)+timerS+(timerHS/100))
+                        });
+                        // if(!hasPlayed){
+                        //     celebSound.play();
+                        // }
+                    }else{
+                        scoresTimeMap.push({username: "User"+userCount,
+                            timeString: timerToString(), 
+                            chars: {correct: score, hintsU: hintsCount}, 
+                            time: ((60*timerM)+timerS+(timerHS/100))
+                        });
+                        // if(!hasPlayed){
+                        //     celebSound.play();
+                        // }
+                    }
+                }
+                // console.log(scoresWPM.length == 0);
+                // console.log(scoresWPM);
+            // else then it is the first ever score, so just put at at the front, play sound, and check variables for sound play
+            }else{
+                scoresTimeMap.unshift({username: "User"+userCount,
+                    timeString: timerToString(), 
+                    chars: {correct: score, hintsU: hintsCount}, 
+                    time: ((60*timerM)+timerS+(timerHS/100))
+                });
+                // if(!hasPlayed){
+                //     celebSound.play();
+                // }
+            }
+        }
+    }
+    
+    // update sound variable
+    // hasPlayed = false;
+    // Updated Display Statements
+    // if the array is not empty then update the aligment of the scores, else just keep it at the center
+    if(scoresTimeMap.length !=0){
+        leaderboardScoresTime.style.textAlign = "left";
+        // if the array has 3 scores than display the username, and time, using <br> for line breaks
+        if(scoresTimeMap.length == 3){
+            leaderboardScoresTime.innerHTML = "1: "+ scoresTimeMap[0].timeString + " - "+scoresTimeMap[0].chars.correct + "/5 - Hints Used: "+scoresTimeMap[0].chars.hintsU + "<br>2: "+ scoresTimeMap[1].timeString + " - "+scoresTimeMap[1].chars.correct + "/5 - Hints Used: "+scoresTimeMap[1].chars.hintsU+"<br>3: "+ scoresTimeMap[2].timeString + " - "+scoresTimeMap[2].chars.correct + "/5 - Hints Used: "+scoresTimeMap[2].chars.hintsU;
+        // if the array has 2 scores than display the username, and time, using <br> for line breaks
+        }else if(scoresTimeMap.length == 2){
+            leaderboardScoresTime.innerHTML = "1: "+ scoresTimeMap[0].timeString + " - "+scoresTimeMap[0].chars.correct + "/5 - Hints Used: "+scoresTimeMap[0].chars.hintsU + "<br>2: "+ scoresTimeMap[1].timeString + " - "+scoresTimeMap[1].chars.correct + "/5 - Hints Used: "+scoresTimeMap[1].chars.hintsU;
+            // else the array has only 1 score so just display that one's username and score
+        }else{
+            leaderboardScoresTime.innerHTML = "1: "+ scoresTimeMap[0].timeString + " - "+scoresTimeMap[0].chars.correct + "/5 - Hints Used: "+scoresTimeMap[0].chars.hintsU;
+        }
+        // console.log(scoresWPM.length == 0);
+        // console.log(scoresWPM);
+    }else{
+        // leaderboardScoresTime.innerHTML = "test";
+        leaderboardScoresTime.style.textAlign = "center";
+        // leaderboardScoresTime.style.backgroundColor = "red";
+    }
+
+    // update local storage with the updated arrays and usercount
+    localStorage.setItem("userTotal", JSON.stringify(userCount));
+    if(scoresTimeMap.length > 0){
+        localStorage.setItem("scoresTimeMap", JSON.stringify(scoresTimeMap));
+    }
+}
+
+
+// start the running timer
+function startTimer(e){
+    // if a text area has not been completed
+    if(!hasCompleted){
+        // originTextBox.innerHTML = "A sample sentence used for testing.";
+        // check if interval timer is null, used to ensure no overlapping/stacking timers
+        if(intervalTimer == null){
+            // use setinterval to call runningtimer every 10 miliseconds, with a serpate one to update the wpm display every 50 miliseconds
+            intervalTimer = setInterval(()=>runningTimer(), 10);
+            // intervalTimerTest = setInterval(()=>console.log(deathmatchBtn.value), 100);
+            // console.log("testing");
+        }
+
+        isStopped = false;
+        // testMatch(e);
+    }
+}
+
+
+// stop button to stop timer:
+function stopTimer(e){
+    // e.preventDefault();
+    // clear the interval for both timer and wpm dispalay 
+    clearInterval(intervalTimer);
+    // clearInterval(intervalTimerTest);
+    // set interval to null
+    intervalTimer = null;
+    // update the timer element
+    theTimer.innerHTML = timerToString();
+}
+
+
+// Reset everything:
+function resetTimer(e){
+    // reset timer, wpm, booleans, and char legnth variables/displays
+    timerHS = 0;
+    timerS = 0;
+    timerM = 0;
+    // stop timer
+    stopTimer(e);
+    hasCompleted = false;
+}
+
+
+
 // Basic Variables
 let map;
 let currQuestion = 0;
@@ -115,7 +372,7 @@ const resetBtn = document.querySelector("#reset-button")
 
 // Function to show hints for current question.
 function showHints(e){
-    e.preventDefault();
+    // e.preventDefault();
     
     // Update the number of hints used
     if(!hintUsed){
@@ -128,6 +385,7 @@ function showHints(e){
     // symbols can be added to either markers or lines, i added it to a marker here to be on top of some buildings, one of which is the actual answer and 2 are other buildings
     // the markers act as hints
     // the svgmarker is actually the symbol which use a vector based path to display an image, here i used an already available one being the backward closed arrow since it looked good
+    // predefined symbols: https://developers.google.com/maps/documentation/javascript/symbols#predefined
     const svgMarker = {
         path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
         fillColor: "orange",
@@ -215,6 +473,7 @@ function checkType(e){
 
 // function to check if the answer is correct using .lat and .lng to get where the user clicked
 function checkAnswer(e) {
+    startTimer(e);
     // once you answer you can't change the map type
     mapTypeBtn.disabled = true;
     // get location bounds for current locations
@@ -239,8 +498,10 @@ function checkAnswer(e) {
         // display the final score 
         let wrong = currQuestion-score;
         resultBox.innerHTML = score + " Correct, "+ wrong+" Incorrect. Hints Used: "+hintsCount;
+        hasCompleted = true;
+        stopTimer(e);
         
-        
+        updateLeaderboard();
         
     }else{
         // if not last question, display next question
@@ -284,7 +545,7 @@ function drawRectangle(bounds, correct) {
 // function to reset the game
 function resetGame(e){
     // prevent default and setting the innerhtml of all child elements to be empty so it disappears
-    e.preventDefault();
+    // e.preventDefault();
     for (const child of currQuestionBox.children) {
         child.innerHTML = "";
     }
@@ -310,6 +571,9 @@ function resetGame(e){
 mapTypeBtn.addEventListener("change", this.checkType);
 hintsBtn.addEventListener("click", this.showHints);
 resetBtn.addEventListener("click", this.resetGame);
+
+hintsBtn.addEventListener("click", this.startTimer);
+resetBtn.addEventListener("click", this.resetTimer);
 
 // function to update the question
 function updateQuestion(){
@@ -355,4 +619,5 @@ function initMap() {
     map.addListener("dblclick", checkAnswer);
     // update question at the start to display the first question
     updateQuestion();
+    updateLeaderboard();
 }
