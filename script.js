@@ -1,4 +1,5 @@
-// using timer and leaderboard from previous proejct
+// using timer and leaderboard from previous proejct (lines 1-255), styles for leaderbaord and timer, as well as html elements for those as well.
+
 // localStorage.clear();
 // Two Intervals, one for the timer and related operations and a different one for the wpm section as if it were at the same pace as the timer it would look crazy
 let intervalTimer = null;
